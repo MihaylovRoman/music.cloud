@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import './style.css'
-import FormRegister from '../../component/FormRegister/FormRegister'
+import FormRegister from '../../components/FormRegister/FormRegister'
 const Registation = () => {
 
   const [register, setRegister] = useState(false)
