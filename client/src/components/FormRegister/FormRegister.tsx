@@ -12,15 +12,23 @@ interface IRegistrationForm {
     email: string,
     password: string
 }
+interface IAuthForm {
+    login: string,
+    password: string
+}
 
 
 const FormRegister: React.FC<IGeneralForm> = ({ active, setActive }) => {
 
-    const { register, handleSubmit } = useForm<IRegistrationForm>()
+    const { register: registerReg, handleSubmit: handleSubmutReg, formState: { errors: errorsReg } } = useForm<IRegistrationForm>()
+
+    const { register: registerAuth, handleSubmit: handleSubmutAuth, formState: { errors: errorsAuth } } = useForm<IAuthForm>()
+
+
     const [isSuccess, setIsSuccess] = useState(false)
 
-    const onSubmit: SubmitHandler<IRegistrationForm> = data => {
-        fetch('http://localhost:5000/api', {
+    const onSubmitReg: SubmitHandler<IRegistrationForm> = data => {
+        fetch('http://localhost:5000/registration', {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
@@ -35,44 +43,51 @@ const FormRegister: React.FC<IGeneralForm> = ({ active, setActive }) => {
             })
     }
 
+    const onSubmitAuth: SubmitHandler<IAuthForm> = data => {
+        console.log(data)
+    }
+
 
     return (
         <div className='formRegister'>
             <div className={active ? 'wrapperFormReg active' : 'wrapperFormReg'}>
-                <form className='regForm sign-up' onSubmit={handleSubmit(onSubmit)}>
+                <form className='regForm sign-up' onSubmit={handleSubmutReg(onSubmitReg)}>
                     <div className='form'>
                         <h2>Создать аккаунт</h2>
                         <div className='formWriting'>
                             <p>Придумайте логин:</p>
-                            <input type='text' {...register('login',
+                            <input type='text' {...registerReg('login',
                                 { required: 'true' })
                             } />
+                            <div className='errorField'>{errorsReg?.login && 'Логин не может быть пустым!'}</div>
                         </div>
                         <div className='formWriting'>
                             <p>Ваш Email:</p>
-                            <input type='email' {...register('email', { required: 'true' })
-
+                            <input type='email' {...registerReg('email', { required: 'true' })
                             } />
+                            <div className='errorField'>{errorsReg?.email && 'email не может быть пустым!'}</div>
                         </div>
                         <div className='formWriting'>
                             <p>Придумайте пароль:</p>
-                            <input type='password' {...register('password', { required: 'true' })
-
+                            <input type='password' {...registerReg('password', { required: 'true' })
                             } />
+                            <div className='errorField'>{errorsReg?.password && 'Пароль не может быть пустым!'}</div>
                         </div>
                         <button className='formBtn'>Продолжить</button>
                     </div>
                 </form>
-                <form className='regForm sign-in'>
+                <form className='regForm sign-in' onSubmit={handleSubmutAuth(onSubmitAuth)}>
                     <div className='form'>
                         <h2>Авторизация</h2>
                         <div className='formWriting'>
                             <p>Введите логин:</p>
-                            <input type='text' />
+                            <input type='text' {...registerAuth('login', { required: 'true' })} />
+                            <div className='errorField'>{errorsAuth?.login && 'Логин не может быть пустым'}</div>
                         </div>
                         <div className='formWriting'>
                             <p>Введите пароль:</p>
-                            <input type='password' />
+                            <input type='password' {...registerAuth('password', { required: 'true' })} />
+                            <div className='errorField'>{errorsAuth?.password && 'Пароль не может быть пустым'}</div>
                         </div>
                         <button className='formBtn'>Продолжить</button>
                     </div>
@@ -87,7 +102,7 @@ const FormRegister: React.FC<IGeneralForm> = ({ active, setActive }) => {
                         </div>
                         <div className='toggle-panel toggle-right'>
                             {
-                                isSuccess ? (<>
+                                !isSuccess ? (<>
                                     <h2>Добро пожаловать!</h2>
                                     <p>Зарегистрируйтесь, если у вас все еще нет аккаунта</p>
                                 </>) : (<>

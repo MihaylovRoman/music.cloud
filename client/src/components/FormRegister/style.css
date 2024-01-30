@@ -172,3 +172,7 @@
 .wrapperFormReg.active .toggle-right {
     transform: translateX(200%);
 }
+.errorField{
+    color: #ff0000;
+    font-size: 12px;
+}
