@@ -3,13 +3,13 @@ const prisma = new PrismaClient()
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken'
 
+
+
 const generateJwt = (id: any, login: string) => {
     return jwt.sign(
-        {id, login}, 
-        'key',
-        {expiresIn: '7d'}
-
-        )//////Здесь я остановился!
+        { id, login },
+        'mokawaa',
+        { expiresIn: '24h' })
 }
 
 
@@ -25,7 +25,7 @@ class UsersController {
         if (Users) {
             return res.status(200).json(Users)
         }
-        return res.status(404).json({ message: 'Пользователей нет' })
+        return res.status(500).json({ message: 'Пользователей нет' })
 
     }
 
@@ -48,17 +48,27 @@ class UsersController {
                     }
                 })
             if (!candidateLogin && !candidateEmail) {
+
+                const hashPassword = await bcrypt.hash(password, 5)
+
                 const checkUser = await prisma.user.create({
                     data: {
                         login: login,
                         email: email,
-                        password: password
+                        password: hashPassword
                     },
                 })
-                if (checkUser){
-                    const hashPassword = await bcrypt.hash(password, 5)
-                }
-                    
+
+                const basket = await prisma.basket.create({
+                    data: {
+                        user_id: checkUser.id
+                    }
+                })
+
+                const token = generateJwt(checkUser.id, checkUser.login)
+
+                return res.json(token)
+
 
             }
             else if (candidateLogin) {
@@ -74,7 +84,7 @@ class UsersController {
             res.status(400).send({ message: e })
         }
     }
-    async login(req: any, res: any, next:any) {
+    async login(req: any, res: any, next: any) {
         const { login, password } = req.body
         if (!login || !password) return res.status(400).send({ message: 'Поля не заполнены' })
 
@@ -83,9 +93,23 @@ class UsersController {
                 login: login,
             },
         })
-        if(User) return next.status(500).send({message: 'Пользователь не найден'})
-        
+        if (!User) return next.status(500).send({ message: 'Пользователь не найден' })
+
+
+        let checkPassword = bcrypt.compareSync(password, User.password)
+        if (!checkPassword) return next('500', { message: 'Неверный логин или пароль!' })
+
+        const token = generateJwt(User.id, User.login)
+        return res.json({ token })
+
+
     }
+
+    async checkPass(req: any, res: any) {
+        const token = generateJwt(req.user.id, req.user.login)
+        return res.json(token)
+    }
+
     async deleteUser(req: any, res: any) {
 
     }

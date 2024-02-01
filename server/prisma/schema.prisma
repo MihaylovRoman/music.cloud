@@ -10,9 +10,48 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User{
-  id Int @id @default(autoincrement())
-  login String @unique
-  email String @unique
-  password String
+model User {
+  id        Int     @id @default(autoincrement())
+  login     String  @unique
+  email     String  @unique
+  password  String
+  basket_id Basket?
+  role      Role    @default(USER)
+}
+
+model Basket {
+  id              Int               @id @default(autoincrement())
+  user            User              @relation(fields: [user_id], references: [id])
+  user_id         Int               @unique
+  User_list_music User_list_music[]
+}
+
+model User_list_music {
+  music     Music?  @relation(fields: [music_id], references: [id])
+  music_id  Int
+  basket    Basket? @relation(fields: [basket_id], references: [id])
+  basket_id Int     @unique
+}
+
+model Music {
+  id        Int     @id @default(autoincrement())
+  name      String
+  artist    Artist? @relation(fields: [artist_id], references: [id])
+  artist_id Int
+  playtime  String
+  image     String
+
+  User_list_music User_list_music[]
+}
+
+model Artist {
+  id       Int     @id @default(autoincrement())
+  nickname String
+  image    String
+  music    Music[]
+}
+
+enum Role {
+  USER
+  ADMIN
 }

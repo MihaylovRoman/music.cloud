@@ -2,6 +2,9 @@ import express from 'express';
 import UsersController from './controllers/users.controller';
 import cors from 'cors';
 
+import * as dotenv from 'dotenv';
+dotenv.config()
+
 const PORT = 5000;
 const app = express();
 
