@@ -9,7 +9,7 @@ const generateJwt = (id: any, login: string) => {
     return jwt.sign(
         { id, login },
         'mokawaa',
-        { expiresIn: '24h' })
+        { expiresIn: '5d' })
 }
 
 

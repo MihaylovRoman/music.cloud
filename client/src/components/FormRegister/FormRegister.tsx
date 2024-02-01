@@ -28,7 +28,7 @@ const FormRegister: React.FC<IGeneralForm> = ({ active, setActive }) => {
     const [isSuccess, setIsSuccess] = useState(false)
 
     const onSubmitReg: SubmitHandler<IRegistrationForm> = data => {
-        fetch('http://localhost:5000/registration', {
+        fetch('http://localhost:5000/api/user/registration', {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',

@@ -1,9 +1,8 @@
 import express from 'express';
-import UsersController from './controllers/users.controller';
 import cors from 'cors';
+import router from './routes';
 
-import * as dotenv from 'dotenv';
-dotenv.config()
+
 
 const PORT = 5000;
 const app = express();
@@ -12,9 +11,9 @@ app.use(cors())
 app.use(express.json())
 
 
-app.post('/registration', UsersController.registration)
+app.use('/api', router)
 
-app.post('/auth', UsersController.login)
+
 
 
 
