@@ -14,6 +14,7 @@ const generateJwt = (id: any, login: string) => {
 
 
 class UsersController {
+
     async getAll(req: any, res: any) {
 
         const Users = await prisma.user.findMany({
@@ -29,6 +30,7 @@ class UsersController {
 
     }
 
+    // Метод для регистрации
     async registration(req: any, res: any) {
         const { login, email, password } = req.body
         if (!login || !password || !email) return res.status(400).send({ message: 'Поля не заполнены' })
@@ -84,6 +86,8 @@ class UsersController {
             res.status(400).send({ message: e })
         }
     }
+
+    // Метод для авторизации
     async login(req: any, res: any, next: any) {
         const { login, password } = req.body
         if (!login || !password) return res.status(400).send({ message: 'Поля не заполнены' })
@@ -93,11 +97,11 @@ class UsersController {
                 login: login,
             },
         })
-        if (!User) return next.status(500).send({ message: 'Пользователь не найден' })
+        if (!User) return res.status(500).send({ message: 'Пользователь не найден' })
 
 
         let checkPassword = bcrypt.compareSync(password, User.password)
-        if (!checkPassword) return next('500', { message: 'Неверный логин или пароль!' })
+        if (!checkPassword) return res.status(500).json({ message: 'Неверный логин или пароль!' })
 
         const token = generateJwt(User.id, User.login)
         return res.json({ token })
@@ -105,13 +109,24 @@ class UsersController {
 
     }
 
+    // Проверка на авторизованность
     async checkPass(req: any, res: any) {
         const token = generateJwt(req.user.id, req.user.login)
         return res.json(token)
     }
 
+
+    //Метод для удаления пользователя - ДОСТУП ТОЛЬКО У АДМИНА
     async deleteUser(req: any, res: any) {
 
+        try {
+            const user_id = parseInt(req.params.id)
+            
+            
+
+        } catch (e) {
+            res.status(500).json({ message: "Ошибка удаления: " + e })
+        }
     }
 }
 export default new UsersController()

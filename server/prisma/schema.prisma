@@ -17,6 +17,7 @@ model User {
   password  String
   basket_id Basket?
   role      Role    @default(USER)
+  image     String  @default("")
 }
 
 model Basket {
