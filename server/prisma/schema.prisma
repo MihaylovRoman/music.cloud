@@ -35,19 +35,20 @@ model User_list_music {
 }
 
 model Music {
-  id        Int     @id @default(autoincrement())
+  id        Int    @id @default(autoincrement())
   name      String
-  artist    Artist? @relation(fields: [artist_id], references: [id])
-  artist_id Int
+  artist    Artist @relation(fields: [artist_id], references: [id])
+  artist_id Int[]
   playtime  String
   image     String
+  url_music String
 
   User_list_music User_list_music[]
 }
 
 model Artist {
   id       Int     @id @default(autoincrement())
-  nickname String
+  nickname String  @unique
   image    String
   music    Music[]
 }

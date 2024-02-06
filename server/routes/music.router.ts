@@ -3,7 +3,7 @@ import musicController from '../controllers/music.controller';
 
 const router = Router()
 
-router.post('/add', musicController.addMusic)
+router.post('/add', musicController.addMusicInBasket)
 router.post('/delete', musicController.deleteMusic)
 
 

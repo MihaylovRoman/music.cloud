@@ -4,7 +4,6 @@ const prisma = new PrismaClient()
 
 class MusicController {
 
-    
     async getAll(req: any, res: any) {
 
     }
@@ -12,7 +11,7 @@ class MusicController {
 
 
     // Метод для добавления музыки 
-    async addMusic(req: any, res: any) {
+    async addMusicInBasket(req: any, res: any) {
         const { user_id, music_id } = req.body
 
         try {
