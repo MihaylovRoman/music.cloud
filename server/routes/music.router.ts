@@ -1,10 +1,13 @@
 import { Router } from 'express';
 import musicController from '../controllers/music.controller';
+import authMiddleware from '../middleware/auth.middleware';
 
 const router = Router()
 
-router.post('/add', musicController.addMusicInBasket)
-router.post('/delete', musicController.deleteMusic)
+router.post('/add', authMiddleware, musicController.addMusicInBasket)
+router.post('/delete', authMiddleware, musicController.deleteMusicFromBasket)
+router.get('/musicUser', authMiddleware, musicController.getAllMusicUser)
+router.get('/allMusic', authMiddleware, musicController.getAll)
 
 
 

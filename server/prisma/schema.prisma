@@ -2,58 +2,74 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+    provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
 }
 
 model User {
-  id        Int     @id @default(autoincrement())
-  login     String  @unique
-  email     String  @unique
-  password  String
-  basket_id Basket?
-  role      Role    @default(USER)
-  image     String  @default("")
+    id        Int     @id @default(autoincrement())
+    login     String  @unique
+    email     String  @unique
+    password  String
+    basket_id Basket?
+    role      Role    @default(USER)
+    image     String  @default("")
 }
 
 model Basket {
-  id              Int               @id @default(autoincrement())
-  user            User              @relation(fields: [user_id], references: [id])
-  user_id         Int               @unique
-  User_list_music User_list_music[]
+    id              Int               @id @default(autoincrement())
+    user            User              @relation(fields: [user_id], references: [id])
+    user_id         Int               @unique
+    User_list_music User_list_music[]
 }
 
 model User_list_music {
-  music     Music?  @relation(fields: [music_id], references: [id])
-  music_id  Int
-  basket    Basket? @relation(fields: [basket_id], references: [id])
-  basket_id Int     @unique
+    music     Music?  @relation(fields: [music_id], references: [id])
+    music_id  Int
+    basket    Basket? @relation(fields: [basket_id], references: [id])
+    basket_id Int
+
+    @@id([music_id, basket_id])
 }
 
 model Music {
-  id        Int    @id @default(autoincrement())
-  name      String
-  artist    Artist @relation(fields: [artist_id], references: [id])
-  artist_id Int[]
-  playtime  String
-  image     String
-  url_music String
-
-  User_list_music User_list_music[]
+    id        Int    @id @default(autoincrement())
+    name      String
+    playtime  String
+    image     String
+    url_music String @default("")
+    User_list_music User_list_music[]
+    All_music       All_music[] //
 }
 
 model Artist {
-  id       Int     @id @default(autoincrement())
-  nickname String  @unique
-  image    String
-  music    Music[]
+    id              Int                  @id @default(autoincrement())
+    nickname        String               @unique
+    image           String
+    artist_music_id Artist_music_basket?
+}
+
+model Artist_music_basket {
+    id        Int         @id @default(autoincrement())
+    artist    Artist      @relation(fields: [artist_id], references: [id])
+    artist_id Int         @unique
+    All_music All_music[]
+}
+
+model All_music {
+    music     Music?               @relation(fields: [music_id], references: [id])
+    music_id  Int
+    artist    Artist_music_basket? @relation(fields: [artist_basket], references: [id])
+    artist_basket Int
+
+    @@id([music_id, artist_basket])
 }
 
 enum Role {
-  USER
-  ADMIN
+    USER
+    ADMIN
 }

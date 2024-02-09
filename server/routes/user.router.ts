@@ -11,8 +11,8 @@ router.post('/login', usersController.login)
 router.get('/auth', authMiddleware, usersController.checkPass)
 
 // Для админа
-router.post('/deleteUser', usersController.deleteUser)
-router.get('/getUsers', usersController.getAll)
+router.post('/deleteUser',checkRoleMiddleware("ADMIN"), usersController.deleteUser)
+router.get('/getUsers',checkRoleMiddleware("ADMIN"), usersController.getAll)
 
 
 export default router
