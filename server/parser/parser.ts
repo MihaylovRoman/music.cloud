@@ -92,15 +92,13 @@ type TArtist = {
                         playtime,
                         trackImage,
                         downloadUrl
-                        // Продумать как соединить с 2 авторами
                     }
                 })
 
                 // Запись в БД
-                
                 const { trackName, trackArtists, trackImage, playtime, downloadUrl } = getAllMusic
                 for (let k = 0; k < playtime.length; k++) {
-                    
+
 
                     let checkSong = await prisma.music.findFirst({
                         where: {
@@ -112,48 +110,55 @@ type TArtist = {
                             artist_id: candidateArtist.id
                         }
                     })
-                    
+
                     if (!checkSong) {
 
-                        let replaceName:string = trackName[k].replaceAll(' ', '-')
-                        let replaceArtists:string = trackArtists[k].replaceAll(' ', '-')
-
-
-                        downloadMusic(downloadUrl[k], replaceName, replaceArtists)
-                        const createdMusic = await prisma.music.create({
-                            data: {
-                                name: trackName[k],
-                                playtime: playtime[k],
-                                image: trackImage[k],
-                                url_music: `/music/${replaceArtists}-${replaceArtists}.mp3`
-
+                        let replaceName: string = trackName[k].replaceAll(' ', '-').replaceAll(/[!/*?]/g, '-')
+                        let replaceArtists: string = trackArtists[k].replaceAll(' ', '-').replaceAll(/[!/*?]/g, '-')
+                        let replaceArtist: string = artistNick.replaceAll(' ', '-').replaceAll(/[!/*?]/g, '-')
+                        
+                        downloadMusic(downloadUrl[k], replaceName, replaceArtists, replaceArtist, async () => {
+                            const createdMusic = await prisma.music.create({
+                                data: {
+                                    name: trackName[k],
+                                    playtime: playtime[k],
+                                    image: trackImage[k],
+                                    url_music: `/music/${replaceArtist}/${replaceArtists}-${replaceArtists}.mp3`
+                                }
+                            })
+                            if (artistBasket) {
+                                await prisma.all_music.create({
+                                    data: {
+                                        music_id: createdMusic.id,
+                                        artist_basket: artistBasket.id
+                                    }
+                                })
                             }
                         })
-                        if(artistBasket){
-                            await prisma.all_music.create({
-                                data: {
-                                    music_id: createdMusic.id,
-                                    artist_basket: artistBasket.id
-                                }
-                            })
-                        }
+                        
                     } else {
-                        if(artistBasket){
-                            await prisma.all_music.create({
-                                data: {
-                                    music_id: checkSong.id,
-                                    artist_basket: artistBasket.id
+                        if (artistBasket) {
+                            const repeatMusic = await prisma.all_music.findFirst({
+                                where: {
+                                    music_id: checkSong.id
                                 }
                             })
+                            if (repeatMusic) {
+                                continue;
+                            } else {
+                                await prisma.all_music.create({
+                                    data: {
+                                        music_id: checkSong.id,
+                                        artist_basket: artistBasket.id
+                                    }
+                                })
+                            }
                         }
                     }
-                    
-
                 }
-
+                
                 //Need wait
                 await page.goto(`${links[z]}?page=${j + 2}`)
-                
             }
 
         }

@@ -74,36 +74,31 @@ class MusicController {
 
     async getAll(req:any, res:any){
         try {
-            // const allMusic = await prisma.all_music.findMany({
-            //     select:{
-            //         music: {
-            //             select: {
-            //                 name:true,
-            //                 playtime: true,
-            //                 image: true,
-            //                 url_music: true,
-            //             }
-            //         },
-            //         artist: {
-            //             select: {
-            //                 artist: {
-            //                     select: {
-            //                         nickname: true,
-            //                         image: true,
-            //                     }
-            //                 }
-            //             }
-            //         }
-            //     }
-            // })
-            const allMusic = await prisma.music.findMany({
-                select: {
-                    name: true,
-                    playtime: true,
-                    url_music: true,
-                    image: true
+            const allMusic = await prisma.all_music.findMany({
+                select:{
+                    music: {
+                        select: {
+                            id: true,
+                            name:true,
+                            playtime: true,
+                            image: true,
+                            url_music: true,
+                        }
+                    },
+                    artist: {
+                        select: {
+                            artist: {
+                                select: {
+                                    id: true,
+                                    nickname: true,
+                                    image: true,
+                                }
+                            }
+                        }
+                    }
                 }
             })
+            
             res.status(200).json(allMusic)
         } catch (e) {
             res.status(404).json({message: "Музыка не найдена"})
