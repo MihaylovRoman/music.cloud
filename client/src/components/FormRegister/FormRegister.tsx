@@ -91,7 +91,6 @@ const FormRegister: React.FC<IGeneralForm> = ({ active, setActive }) => {
                         </div>
                         <button className='formBtn'>Продолжить</button>
                     </div>
-
                 </form>
                 <div className='toggle-container'>
                     <div className='toggle'>

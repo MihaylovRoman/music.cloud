@@ -166,7 +166,9 @@ type TArtist = {
 
 
         await page.goto(`https://ru.patefon.cc/perfs/%D1%80%D1%8D%D0%BF_%D0%B8_%D1%85%D0%B8%D0%BF-%D1%85%D0%BE%D0%BF?page=${i}`, { waitUntil: 'load' })
-        await page.waitForNavigation()
+        if(i + 1 == pagesQuantity){
+            await page.waitForNetworkIdle()
+        }
 
     }
 

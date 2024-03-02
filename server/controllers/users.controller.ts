@@ -68,7 +68,7 @@ class UsersController {
                 })
 
                 const token = generateJwt(checkUser.id, checkUser.login)
-
+                
                 return res.json(token)
 
 
@@ -98,7 +98,6 @@ class UsersController {
             },
         })
         if (!User) return res.status(500).send({ message: 'Пользователь не найден' })
-
 
         let checkPassword = bcrypt.compareSync(password, User.password)
         if (!checkPassword) return res.status(500).json({ message: 'Неверный логин или пароль!' })

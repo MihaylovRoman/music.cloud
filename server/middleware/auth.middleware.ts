@@ -17,6 +17,6 @@ export default function (req: any, res: any, next: any) {
 
 
     } catch (e) {
-        res.status(401).json({ message: 'Вы не авторизованы.' })
+        res.status(401).json({ message: 'Произошла ошибка' })
     }
 }

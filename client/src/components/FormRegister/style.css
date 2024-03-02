@@ -25,10 +25,12 @@
     margin-top: 40px;
     font-weight: 600;
     font-family: 'Comfortaa', sans-serif;
-    background-color: #fff;
+    background: #fff;
     border: none;
-    border-radius: 15px;
-    padding: 10px 55px;
+    border-radius: 10px;
+    width: 75%;
+    padding: 12px;
+    cursor: pointer;
 }
 
 .form h2 {
@@ -45,13 +47,19 @@
     height: 100%;
 }
 
+.formWriting{
+    width: 75%;
+    padding-right: 10px;
+}
 .formWriting p {
     margin: 10px 0px;
 }
 
 .formWriting input {
-    padding: 10px 25px;
-    border-radius: 15px;
+    font-size: 13px;
+    padding: 12px 0 12px 10px;
+    width: 100%;
+    border-radius: 10px;
     border: 1px solid #909090;
     outline: none;
     font-family: 'Comfortaa', sans-serif;
